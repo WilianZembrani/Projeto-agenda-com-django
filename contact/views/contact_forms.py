@@ -1,30 +1,31 @@
-from django.shortcuts import get_object_or_404, render, redirect
-from django.db.models import Q
-from contact.models import Contact
+from django.shortcuts import render
+from django.shortcuts import redirect, render
+
 from contact.forms import ContactForm
+
 
 def create(request):
     if request.method == 'POST':
+        form = ContactForm(request.POST)
+
         context = {
-            'form': ContactForm(request.POST)
-    }
-    
+            'form': form
+        }
+
+        if form.is_valid():
+            form.save()
+            return redirect('contact:create')
+
         return render(
             request,
             'contact/create.html',
             context
         )
-
-
     context = {
         'form': ContactForm()
     }
-
     return render(
         request,
         'contact/create.html',
         context
     )
-
-
-
